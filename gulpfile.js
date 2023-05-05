@@ -3,23 +3,22 @@ const gulpRename = require('gulp-rename')
 const gulpClean = require('gulp-clean')
 const gls = require('gulp-live-server')
 
+const SRC_PATH = process.argv.slice(2)[1]
 const TEMP_BUILD_PATH = './temp-run/'
 
 function clean(cb) {
-    src(TEMP_BUILD_PATH, { read: false }).pipe(gulpClean())
-    cb()
+    return src(TEMP_BUILD_PATH, {
+        read: false,
+        allowEmpty: true,
+    }).pipe(gulpClean())
 }
 
 function build(cb) {
-    src('./call-bind-apply/index.js')
-        .pipe(gulpRename('app.js'))
-        .pipe(dest(TEMP_BUILD_PATH))
-    cb()
+    return src(SRC_PATH).pipe(gulpRename('app.js')).pipe(dest(TEMP_BUILD_PATH))
 }
 
 function copyHtml(cb) {
-    src('./index.html').pipe(dest(TEMP_BUILD_PATH))
-    cb()
+    return src('./index.html').pipe(dest(TEMP_BUILD_PATH))
 }
 
 function server(cb) {
