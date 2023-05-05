@@ -1,12 +1,32 @@
-const { src, dest } = require('gulp');
-const rename = require("gulp-rename");
+const { src, dest, series } = require('gulp')
+const gulpRename = require('gulp-rename')
+const gulpClean = require('gulp-clean')
+const gls = require('gulp-live-server')
 
-function defaultTask(cb) {
-    src('./call-bind-apply/index.js')
-        .pipe(rename("app.js"))
-        .pipe(dest('temp-run/'));
-    // place code for your default task here
-    cb();
+const TEMP_BUILD_PATH = './temp-run/'
+
+function clean(cb) {
+    src(TEMP_BUILD_PATH, { read: false }).pipe(gulpClean())
+    cb()
 }
 
-exports.default = defaultTask
+function build(cb) {
+    src('./call-bind-apply/index.js')
+        .pipe(gulpRename('app.js'))
+        .pipe(dest(TEMP_BUILD_PATH))
+    cb()
+}
+
+function copyHtml(cb) {
+    src('./index.html').pipe(dest(TEMP_BUILD_PATH))
+    cb()
+}
+
+function server(cb) {
+    const server = gls.static(TEMP_BUILD_PATH, 8888)
+    server.start()
+    cb()
+}
+
+exports.build = build
+exports.default = series(clean, build, copyHtml, server)
