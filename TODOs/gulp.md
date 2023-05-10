@@ -1,0 +1,3 @@
+-   [ ] watch files to restart/reload
+-   [ ] support multiple files with order
+-   [ ] auto open in browser or re-use last opened browser tab
